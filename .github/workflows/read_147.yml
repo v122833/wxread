@@ -54,9 +54,5 @@ jobs:
       run: |
         python main.py
 
-    # 保活：接近 60 天不活跃时自动产生一个空提交，防止定时任务被禁用
-    - name: Keepalive workflow
-      uses: gautamkrishnar/keepalive-workflow@v2
-      with:
-        use_api: false        # 使用提交方式（默认），依赖上面的 contents:write 权限
-        time_elapsed: '45'    # 仅当最近一次提交超过 45 天时才提交，不会天天刷 commit
+    - name: Keepalive Workflow
+      uses: gautamkrishnar/keepalive-workflow@2.0.10
