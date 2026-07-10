@@ -54,5 +54,19 @@ jobs:
       run: |
         python main.py
 
-    - name: Keepalive Workflow
-      uses: gautamkrishnar/keepalive-workflow@2.0.10
+    # 保活：不依赖第三方 action，接近 60 天不活跃时自动产生一个空提交，防止定时任务被禁用
+    - name: Keepalive workflow
+      run: |
+        git config user.name  "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        last=$(git log -1 --format=%ct)
+        now=$(date +%s)
+        days=$(( (now - last) / 86400 ))
+        echo "距上次提交已 ${days} 天"
+        if [ "$days" -ge 45 ]; then
+          git commit --allow-empty -m "chore: keepalive to prevent scheduled workflow from being disabled"
+          git push
+          echo "已推送空提交以保活。"
+        else
+          echo "未满 45 天，跳过保活提交。"
+        fi
